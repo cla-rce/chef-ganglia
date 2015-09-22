@@ -67,7 +67,6 @@ if ports.empty?
   clusternames.push('default')
 end
 
-
 execute 'copy gmond.conf' do
   command 'cp /etc/ganglia/gmond.conf /etc/ganglia/gmond-example.conf'
   creates '/etc/ganglia/gmond-example.conf'
@@ -96,7 +95,9 @@ if node['ganglia']['unicast']
   end
 
   # always connect to localhost
-  node.default['ganglia']['gmond']['udp_send_channel#localhost_8649'] = { ttl: 1, port: 8649, host: '127.0.0.1' }
+  if node['ganglia']['include_localhost']
+    node.default['ganglia']['gmond']['udp_send_channel#localhost_8649'] = { ttl: 1, port: 8649, host: '127.0.0.1' }
+  end
 
 else # multicast
 
